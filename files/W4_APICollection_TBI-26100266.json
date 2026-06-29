@@ -1,0 +1,262 @@
+{
+  "info": {
+    "_postman_id": "himshakti-productwriter-ai-w4",
+    "name": "HimShakti ProductWriter AI — W4 API Collection",
+    "description": "Complete REST API collection for HimShakti ProductWriter AI\nIntern ID: TBI-26100266 | Week 4 — Backend & API Development\n\nBase URL: http://localhost:8000\n\n8 Endpoints covering:\n- Health check\n- List descriptions (with filter)\n- Stats\n- Search\n- Get single\n- Generate (AI)\n- Update\n- Delete",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "base_url", "value": "http://localhost:8000", "type": "string" },
+    { "key": "description_id", "value": "d1a2b3c4", "type": "string" }
+  ],
+  "item": [
+    {
+      "name": "System",
+      "item": [
+        {
+          "name": "1. Health Check",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/health",
+              "host": ["{{base_url}}"],
+              "path": ["api", "health"]
+            },
+            "description": "Check API health, version, AI status and total descriptions count."
+          },
+          "response": [
+            {
+              "name": "200 OK — Health Check",
+              "status": "OK",
+              "code": 200,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"status\": \"ok\",\n  \"service\": \"HimShakti ProductWriter AI\",\n  \"version\": \"1.0.0\",\n  \"ai_enabled\": true,\n  \"total_descriptions\": 3,\n  \"timestamp\": \"2026-06-15T08:00:00Z\"\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Descriptions",
+      "item": [
+        {
+          "name": "2. List All Descriptions",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/descriptions?limit=20&skip=0",
+              "host": ["{{base_url}}"],
+              "path": ["api", "descriptions"],
+              "query": [
+                { "key": "limit", "value": "20" },
+                { "key": "skip",  "value": "0" }
+              ]
+            },
+            "description": "List all saved descriptions. Supports pagination via limit & skip."
+          },
+          "response": [
+            {
+              "name": "200 OK — List All",
+              "status": "OK",
+              "code": 200,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"total\": 3,\n  \"skip\": 0,\n  \"limit\": 20,\n  \"data\": [\n    {\n      \"id\": \"d1a2b3c4\",\n      \"productName\": \"Pure Himalayan Turmeric Powder\",\n      \"tone\": \"health-focused\",\n      \"wordCount\": 72,\n      \"createdAt\": \"2026-06-10T08:00:00Z\"\n    },\n    {\n      \"id\": \"e5f6g7h8\",\n      \"productName\": \"Organic Pahadi Ghee\",\n      \"tone\": \"premium\",\n      \"wordCount\": 68,\n      \"createdAt\": \"2026-06-11T09:30:00Z\"\n    }\n  ]\n}"
+            }
+          ]
+        },
+        {
+          "name": "2b. List — Filter by Tone",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/descriptions?tone=premium",
+              "host": ["{{base_url}}"],
+              "path": ["api", "descriptions"],
+              "query": [{ "key": "tone", "value": "premium" }]
+            },
+            "description": "Filter descriptions by tone: health-focused | premium | traditional"
+          },
+          "response": [
+            {
+              "name": "200 OK — Filtered by Premium",
+              "status": "OK",
+              "code": 200,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"total\": 1,\n  \"skip\": 0,\n  \"limit\": 20,\n  \"data\": [\n    {\n      \"id\": \"e5f6g7h8\",\n      \"productName\": \"Organic Pahadi Ghee\",\n      \"tone\": \"premium\",\n      \"wordCount\": 68\n    }\n  ]\n}"
+            }
+          ]
+        },
+        {
+          "name": "3. Get Stats",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/descriptions/stats",
+              "host": ["{{base_url}}"],
+              "path": ["api", "descriptions", "stats"]
+            },
+            "description": "Get aggregated statistics: counts by tone, average word count, total words."
+          },
+          "response": [
+            {
+              "name": "200 OK — Stats",
+              "status": "OK",
+              "code": 200,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"totalDescriptions\": 3,\n  \"byTone\": {\n    \"health-focused\": 1,\n    \"premium\": 1,\n    \"traditional\": 1\n  },\n  \"averageWordCount\": 70.0,\n  \"totalWords\": 210\n}"
+            }
+          ]
+        },
+        {
+          "name": "4. Search Descriptions",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/descriptions/search?q=turmeric",
+              "host": ["{{base_url}}"],
+              "path": ["api", "descriptions", "search"],
+              "query": [{ "key": "q", "value": "turmeric" }]
+            },
+            "description": "Search saved descriptions by product name or ingredients (case-insensitive)."
+          },
+          "response": [
+            {
+              "name": "200 OK — Search Results",
+              "status": "OK",
+              "code": 200,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"query\": \"turmeric\",\n  \"total\": 1,\n  \"data\": [\n    {\n      \"id\": \"d1a2b3c4\",\n      \"productName\": \"Pure Himalayan Turmeric Powder\",\n      \"tone\": \"health-focused\",\n      \"description\": \"Unlock the ancient healing power...\",\n      \"wordCount\": 72\n    }\n  ]\n}"
+            }
+          ]
+        },
+        {
+          "name": "5. Get Single Description",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/descriptions/{{description_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "descriptions", "{{description_id}}"]
+            },
+            "description": "Fetch a single description by its unique ID."
+          },
+          "response": [
+            {
+              "name": "200 OK — Single Description",
+              "status": "OK",
+              "code": 200,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"id\": \"d1a2b3c4\",\n  \"productName\": \"Pure Himalayan Turmeric Powder\",\n  \"keyIngredients\": \"Turmeric, Black Pepper, Natural Curcumin\",\n  \"weight\": \"100g\",\n  \"brand\": \"HimShakti — Uttarakhand\",\n  \"features\": \"Organic certified, Cold-ground, 3.5% curcumin, Lab-tested\",\n  \"tone\": \"health-focused\",\n  \"description\": \"Unlock the ancient healing power of the Himalayas...\",\n  \"wordCount\": 72,\n  \"createdAt\": \"2026-06-10T08:00:00Z\",\n  \"updatedAt\": \"2026-06-10T08:00:00Z\"\n}"
+            },
+            {
+              "name": "404 Not Found",
+              "status": "Not Found",
+              "code": 404,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"detail\": \"Description with id 'xyz' not found.\"\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "AI Generation",
+      "item": [
+        {
+          "name": "6. Generate Description (AI)",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{base_url}}/api/generate",
+              "host": ["{{base_url}}"],
+              "path": ["api", "generate"]
+            },
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"productName\": \"Himalayan Pink Salt\",\n  \"keyIngredients\": \"Himalayan Rock Salt, 84 trace minerals\",\n  \"weight\": \"500g\",\n  \"brand\": \"HimShakti\",\n  \"features\": \"Hand-mined, No processing, Ancient deposit, Mineral-rich\",\n  \"tone\": \"premium\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "description": "Generate an AI-powered product description using Gemini 1.5 Flash. Auto-saves to store. Returns HTTP 201 Created."
+          },
+          "response": [
+            {
+              "name": "201 Created — Generated",
+              "status": "Created",
+              "code": 201,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"message\": \"Description generated and saved.\",\n  \"data\": {\n    \"id\": \"a1b2c3d4\",\n    \"productName\": \"Himalayan Pink Salt\",\n    \"keyIngredients\": \"Himalayan Rock Salt, 84 trace minerals\",\n    \"weight\": \"500g\",\n    \"brand\": \"HimShakti\",\n    \"features\": \"Hand-mined, No processing, Ancient deposit, Mineral-rich\",\n    \"tone\": \"premium\",\n    \"description\": \"Mined from ancient Siwalik deposits formed over 250 million years, HimShakti Himalayan Pink Salt is among the world's purest mineral salts...\",\n    \"wordCount\": 165,\n    \"createdAt\": \"2026-06-15T10:30:00Z\",\n    \"updatedAt\": \"2026-06-15T10:30:00Z\"\n  }\n}"
+            },
+            {
+              "name": "400 Bad Request — Invalid Tone",
+              "status": "Bad Request",
+              "code": 400,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"detail\": \"Invalid tone. Must be one of: health-focused, premium, traditional\"\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "CRUD Operations",
+      "item": [
+        {
+          "name": "7. Update Description",
+          "request": {
+            "method": "PUT",
+            "url": {
+              "raw": "{{base_url}}/api/descriptions/{{description_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "descriptions", "{{description_id}}"]
+            },
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"description\": \"Updated: Unlock the ancient healing power of the Himalayas with HimShakti Pure Turmeric Powder. Our cold-ground turmeric from Uttarakhand contains over 3.5% curcumin — lab-verified. No additives, no fillers. Pure mountain gold for your daily wellness.\",\n  \"tone\": \"health-focused\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "description": "Edit the description text or tone of an existing saved description."
+          },
+          "response": [
+            {
+              "name": "200 OK — Updated",
+              "status": "OK",
+              "code": 200,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"message\": \"Description updated.\",\n  \"data\": {\n    \"id\": \"d1a2b3c4\",\n    \"productName\": \"Pure Himalayan Turmeric Powder\",\n    \"tone\": \"health-focused\",\n    \"description\": \"Updated: Unlock the ancient healing power...\",\n    \"wordCount\": 51,\n    \"updatedAt\": \"2026-06-15T11:00:00Z\"\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "8. Delete Description",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{base_url}}/api/descriptions/{{description_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "descriptions", "{{description_id}}"]
+            },
+            "description": "Permanently delete a saved description by ID. Returns 204 No Content on success."
+          },
+          "response": [
+            {
+              "name": "204 No Content — Deleted",
+              "status": "No Content",
+              "code": 204,
+              "header": [],
+              "body": ""
+            },
+            {
+              "name": "404 Not Found",
+              "status": "Not Found",
+              "code": 404,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"detail\": \"Description 'd1a2b3c4' not found.\"\n}"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
